@@ -73,12 +73,55 @@ function main() {
   ////
   const c7 = new connection(37, 37)
   c7.identity([0, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36])
+  // c7.connectList([[0, 0], [19, 4], [20, 5], [21, 6], [22, 7], [23, 8], [24, 9], [25, 10], [26, 11], [27, 12]])
+  // c7.connectList([[28, 13], [29, 14], [30, 15], [31, 16], [32, 17], [33, 18], [34, 19], [35, 20], [36, 21]])
   net.addConnection(c7)
   net.differenceLayer(6, 1, 19, 1)
-  net.differenceLayer(6, 7, 25, 7)
-  net.differenceLayer(6, 13, 31, 13)
-  const t3 = net.forwardPropogate(n1)
+  net.differenceLayer(6, 7, 25, 2)
+  net.differenceLayer(6, 13, 31, 3)
+  const t3 = net.forwardPropogate(n1)[7]
   console.log(t3)
+  console.assert(t3[2] == 6, 'diff layer fail')
+  ////
+  // The diff layer is done. disf are in 1,2,3 and the (a xor x) -> 19..25
+  //  (b xor x) -> 25..31
+  //  (c xor x) -> 31..37
+  ////
+  const c8 = new connection(37, 37)
+  c8.identity([0])
+  const c9 = new connection(37, 37)
+  c9.identity([0])
+  const c10 = new connection(37, 37)
+  c10.identity([0])
+  const c11 = new connection(37, 37)
+  c11.identity([0])
+  net.addConnection(c8)
+  net.addConnection(c9)
+  net.addConnection(c10)
+  net.addConnection(c11)
+  net.ifAthenXelseY(7, 1, 19, 25, 4, 5)
+  net.ifAthenXelseY(7, 2, 25, 31, 11, 13)
+  // next if then else
+  const c12 = new connection(37, 19)
+  c12.identity([0])
+  const c13 = new connection(19, 19)
+  c13.identity([0])
+  const c14 = new connection(19, 19)
+  c14.identity([0])
+  const c15 = new connection(19, 19)
+  c15.identity([0])
+  net.addConnection(c12)
+  net.addConnection(c13)
+  net.addConnection(c14)
+  net.addConnection(c15)
+  net.ifAthenXelseY(11, 1, 5, 13, 3, 4)
+  const t4 = net.forwardPropogate(n1)
+  console.log(t4)
+
+
+
+
+
 
 
 

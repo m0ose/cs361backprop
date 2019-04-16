@@ -97,13 +97,45 @@ class Network {
         }
     }
 
+    ifAthenXelseY(connectIndex, a, xstart, ystart, temp, outBits, bits = 6) {
+        let c1 = this.connections[connectIndex]
+        c1.connect(0, a, 1)
+        c1.connect(a, a, -2)
+        for (var i = 0; i < bits; i++) {
+            c1.connect(xstart + i, xstart + i, 1)
+            c1.connect(ystart + i, ystart + i, 1)
+        }
+        let c2 = this.connections[connectIndex + 1]
+        c2.connect(a, a, -1)
+        c2.connect(0, a, 1)
+        c2.connect(a, temp, 1)
+        for (var i = 0; i < bits; i++) {
+            c2.connect(xstart + i, xstart + i, 1)
+            c2.connect(ystart + i, ystart + i, 1)
+        }
+        let c3 = this.connections[connectIndex + 2]
+        c3.connect(a, a, 1)
+        for (var i = 0; i < bits; i++) {
+            c3.connect(a, xstart + i, -1)
+            c3.connect(temp, ystart + i, -1)
+            c3.connect(xstart + i, xstart + i, 1)
+            c3.connect(ystart + i, ystart + i, 1)
+        }
+        let c4 = this.connections[connectIndex + 3]
+        c4.connect(a, a, 1)
+        for (var i = 0; i < bits; i++) {
+            c4.connect(xstart + i, outBits + i, 1)
+            c4.connect(ystart + i, outBits + i, 1)
+        }
+    }
+
     draw() {
         var maxNeurons = 0
         this.connections.forEach((conx) => {
             maxNeurons = Math.max(maxNeurons, conx.weights.length)
         })
-        let w = 300
-        let h = 100
+        let w = 150
+        let h = 50
         var can = document.createElement('canvas')
         can.width = w * this.connections.length
         can.height = h * maxNeurons
