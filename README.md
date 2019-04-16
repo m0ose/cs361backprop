@@ -7,7 +7,7 @@ Most of the code is in [main.js](./main.js) or [connections.js](./connection.js)
 ### From the web
 This is written in javascript and can be run from the web page https://m0ose.github.io/cs362_neuralNIM/index.html .
 ### Locally
-Download/unzip the [files](https://github.com/m0ose/cs362_neuralNIM/archive/master.zip) to a directory and then open index.html. file->open->[directory]/index.html . Note: I have only tested this in the Chrome browser.
+Download/unzip the [files](https://github.com/m0ose/cs362_neuralNIM/archive/master.zip) to a directory and then open index.html. You may be able to just double click the index.html file. Otherwise, in chrome go to file->open->[directory]/index.html . Note: I have only tested this in the Chrome browser.
 
 ## How it works
 ![nim network](./Photos/nim_net2.png)
