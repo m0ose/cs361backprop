@@ -1,3 +1,15 @@
+/**
+ * 
+ * Neural Network for Nim
+ * 
+ * This is the network used to play an optimal game of nim. It spits out garbage if the postion is loosing.
+ * 
+ * Cody Smith
+ * 2019
+ * 
+ */
+
+
 
 function main(p1, p2, p3) {
   let input2 = [1].concat(p1).concat(p2).concat(p3)
