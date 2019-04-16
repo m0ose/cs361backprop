@@ -12,13 +12,18 @@ function changedInput(){
     document.getElementById('result').innerHTML = JSON.stringify(res[18])
     console.log(res)
     // explanation
+    let piles = [p1,p2,p3]
     let pile = 1
-    if (res[1]>0) pile =2
-    if (res[2]>0) pile =3
+    if (res[18][1]>0) pile = 2
+    if (res[18][2]>0) pile = 3
     let a = new Int32Array(res[18]).subarray(3)
     let psize = parseInt(Array.from(a).join(''),2)
+    let error = ''
+    if (a >= piles[pile-1]) {
+        error = 'THERE IS PROBABLY AN ERROR'
+    }
     console.log('binary',psize)
-    document.getElementById('explanation').innerHTML = (`It says to make pile ${pile} have ${psize} stones`)
+    document.getElementById('explanation').innerHTML = (`It says to make pile ${pile} have ${psize} stones. ${error}`)
 }
 
 function toBinary(n){
