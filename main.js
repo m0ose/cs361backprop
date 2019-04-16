@@ -7,14 +7,6 @@ function main(p1, p2, p3) {
   return result
 }
 
-function draw() {
-  let net = mainNetwork()
-  let can = net.draw(30, 15)
-  document.body.appendChild(can)
-}
-
-setTimeout(draw, 100)
-
 
 function mainNetwork() {
   var defaultInput = [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2

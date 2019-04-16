@@ -1,4 +1,20 @@
+/**
+ * Hand made neural network
+ * 
+ * Cody Smith
+ * 2019
+ * made for cs362
+ * 
+ * 
+ */
 
+
+
+/**
+ *  
+ * connections between network levels
+ * 
+ */
 class connection {
     constructor(sizeA, sizeB) {
         this.weights = this.zeros(sizeA, sizeB);
@@ -51,6 +67,12 @@ class connection {
 
 }
 
+/**
+ * 
+ * Basiacally a collection of connections and some helpers
+ * 
+ * 
+ */
 class Network {
     constructor() {
         this.connections = []

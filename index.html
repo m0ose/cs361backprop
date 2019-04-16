@@ -19,12 +19,20 @@ function toBinary(n){
     return fu
 }
 
+function draw() {
+  let net = mainNetwork()
+  let can = net.draw(30, 15)
+  document.body.appendChild(can)
+}
+
+setTimeout(draw, 100)
+
 window.addEventListener('DOMContentLoaded', changedInput, false);
 </script>
 <body>
 
-<div>pile 1: <input type="number" id='p1' value=2 ></div>
-<div>pile 2: <input type="number" id='p2' value=5 ></div>
+<div>pile 1: <input type="number" id='p1' value=5 ></div>
+<div>pile 2: <input type="number" id='p2' value=13 ></div>
 <div>pile 3: <input type="number" id='p3' value=2 ></div>
 <button onclick="changedInput()">run</button>
 <div></div>
