@@ -9,8 +9,6 @@
  * 
  */
 
-
-
 function main(p1, p2, p3) {
   let input2 = [1].concat(p1).concat(p2).concat(p3)
   let net = mainNetwork()
