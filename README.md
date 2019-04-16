@@ -1,4 +1,4 @@
-## Neural Network Nim game
+# Neural Network Nim game
 
 Cody Smith
 April 2019
