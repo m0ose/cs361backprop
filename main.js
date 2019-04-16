@@ -1,28 +1,44 @@
-var input = [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2
-var connections = [];
 
-function main() {
+function main(p1, p2, p3) {
+  let input2 = [1].concat(p1).concat(p2).concat(p3)
+  let net = mainNetwork()
+  let result = net.forwardPropogate(input2)
+
+  return result
+}
+
+function draw() {
+  let net = mainNetwork()
+  let can = net.draw(30, 15)
+  document.body.appendChild(can)
+}
+
+setTimeout(draw, 100)
+
+
+function mainNetwork() {
+  var defaultInput = [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2
   const net = new Network()
-  const n1 = [1].concat(input)
-  const c1 = new connection(19, 32)
+  const n1 = [1].concat(defaultInput)
+  const c1 = new connection(19, 32) //give me some space
   c1.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
   net.addConnection(c1)
-  const c2 = new connection(32, 25)
+  const c2 = new connection(32, 32)
   c2.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
   net.addConnection(c2)
-  const c3 = new connection(25, 32)
+  const c3 = new connection(32, 32)
   c3.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
   net.addConnection(c3)
-  const c4 = new connection(32, 25)
+  const c4 = new connection(32, 32)
   c4.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
   net.addConnection(c4)
   // make xors
   net.makeXOR(0, 1, 7, 19, 19)
-  net.makeXOR(0, 2, 8, 20, 20)
-  net.makeXOR(0, 3, 9, 21, 21)
-  net.makeXOR(0, 4, 10, 22, 22)
-  net.makeXOR(0, 5, 11, 23, 23)
-  net.makeXOR(0, 6, 12, 24, 24)
+  net.makeXOR(0, 2, 8, 21, 20)
+  net.makeXOR(0, 3, 9, 23, 21)
+  net.makeXOR(0, 4, 10, 25, 22)
+  net.makeXOR(0, 5, 11, 27, 23)
+  net.makeXOR(0, 6, 12, 29, 24)
   // next set of xors
   net.makeXOR(2, 19, 13, 20, 19)
   net.makeXOR(2, 20, 14, 22, 20)
@@ -38,7 +54,7 @@ function main() {
   //console.log(t1)
   console.assert(t1[24] == 0 && t1[23] == 1 && t1[22] == 0 && t1[21] == 1 && t1[20] == 0 && t1[19] == 0, "triple xor fail")
   //
-  const c5 = new connection(25, 56)
+  const c5 = new connection(32, 56)
   c5.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
   const c6 = new connection(56, 37)
   c6.identity([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
@@ -142,6 +158,9 @@ function main() {
   c17.connectList([[6, 3], [7, 4], [8, 5], [9, 6], [10, 7], [11, 8]], 1)
   net.addConnection(c16)
   net.addConnection(c17)
+  ////
+  // woops crossed 1 and 2 but didn't want to figure it out
+  ////
   const c18 = new connection(9, 9)
   c18.identity([0, 3, 4, 5, 6, 7, 8])
   c18.connect(1, 2, 1)
@@ -149,26 +168,7 @@ function main() {
   net.addConnection(c18)
   const tFinal = net.forwardPropogate(n1)
   console.log(tFinal)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  document.body.appendChild(net.draw())
-
-
+  return net
 }
 
-setTimeout(main, 20)
+

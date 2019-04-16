@@ -1,8 +1,37 @@
 <script src='./numeric.js'></script>
 <script src='./connection.js'></script>
+<script src='./test.js'></script>
 <script src='./main.js'>
+</script>
+<script>
+function changedInput(){
+    let p1 = toBinary(parseInt(document.getElementById('p1').value))
+    let p2 = toBinary(parseInt(document.getElementById('p2').value))
+    let p3 = toBinary(parseInt(document.getElementById('p3').value))
+    let res = main(p1,p2,p3)
+    document.getElementById('result').innerHTML = JSON.stringify(res[18])
+    console.log(res)
+}
+
+function toBinary(n){
+    let str = n.toString(2).padStart(6,'0')
+    let fu = str.split('').map((a)=>{return parseInt(a)})
+    return fu
+}
+
+window.addEventListener('DOMContentLoaded', changedInput, false);
 </script>
 <body>
 
+<div>pile 1: <input type="number" id='p1' value=2 ></div>
+<div>pile 2: <input type="number" id='p2' value=5 ></div>
+<div>pile 3: <input type="number" id='p3' value=2 ></div>
+<button onclick="changedInput()">run</button>
+<div></div>
+<div style='font-size: xx-large;'>result: <span id='result'></span></div>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
 
 </body>
