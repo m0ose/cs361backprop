@@ -73,8 +73,6 @@ function main() {
   ////
   const c7 = new connection(37, 37)
   c7.identity([0, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36])
-  // c7.connectList([[0, 0], [19, 4], [20, 5], [21, 6], [22, 7], [23, 8], [24, 9], [25, 10], [26, 11], [27, 12]])
-  // c7.connectList([[28, 13], [29, 14], [30, 15], [31, 16], [32, 17], [33, 18], [34, 19], [35, 20], [36, 21]])
   net.addConnection(c7)
   net.differenceLayer(6, 1, 19, 1)
   net.differenceLayer(6, 7, 25, 2)
@@ -83,7 +81,7 @@ function main() {
   console.log(t3)
   console.assert(t3[2] == 6, 'diff layer fail')
   ////
-  // The diff layer is done. disf are in 1,2,3 and the (a xor x) -> 19..25
+  // The diff layer is done. diffs are in 1,2,3 and the (a xor x) -> 19..25
   //  (b xor x) -> 25..31
   //  (c xor x) -> 31..37
   ////
@@ -95,28 +93,67 @@ function main() {
   c10.identity([0])
   const c11 = new connection(37, 37)
   c11.identity([0])
+  c11.connect(1, 3, 1)
   net.addConnection(c8)
   net.addConnection(c9)
   net.addConnection(c10)
   net.addConnection(c11)
   net.ifAthenXelseY(7, 1, 19, 25, 4, 5)
-  net.ifAthenXelseY(7, 2, 25, 31, 11, 13)
+  net.ifAthenXelseY(7, 2, 25, 31, 11, 12)
+  //
   // next if then else
   const c12 = new connection(37, 19)
-  c12.identity([0])
+  c12.identity([0, 1, 2])
   const c13 = new connection(19, 19)
-  c13.identity([0])
+  c13.identity([0, 1, 2])
   const c14 = new connection(19, 19)
-  c14.identity([0])
+  c14.identity([0, 1, 2])
   const c15 = new connection(19, 19)
-  c15.identity([0])
+  c15.identity([0, 1, 2])
   net.addConnection(c12)
   net.addConnection(c13)
   net.addConnection(c14)
   net.addConnection(c15)
-  net.ifAthenXelseY(11, 1, 5, 13, 3, 4)
-  const t4 = net.forwardPropogate(n1)
+  net.ifAthenXelseY(11, 3, 5, 12, 4, 6)
+  const t4 = net.forwardPropogate(n1)[15]
   console.log(t4)
+  //
+  ////
+  // final layers for output.
+  //   a is in 1 and b is in 2
+  //   [1] a
+  //   [2] not a and b
+  //   [3] not a and not b
+  ////
+  const c16 = new connection(19, 19)
+  c16.identity([0, 1, 2, 6, 7, 8, 9, 10, 11], 1)
+  c16.connect(0, 3, 1)
+  c16.connect(0, 4, 1)
+  c16.connect(1, 3, -10)
+  c16.connect(2, 4, -10)
+  const c17 = new connection(19, 9)
+  c17.connect(1, 0, 1)
+  c17.connect(0, 1, -1)
+  c17.connect(0, 2, -1)
+  c17.connect(3, 1, 1)
+  c17.connect(4, 1, 1)
+  c17.connect(2, 2, 1)
+  c17.connect(3, 2, 1)
+  c17.connectList([[6, 3], [7, 4], [8, 5], [9, 6], [10, 7], [11, 8]], 1)
+  net.addConnection(c16)
+  net.addConnection(c17)
+  const c18 = new connection(9, 9)
+  c18.identity([0, 3, 4, 5, 6, 7, 8])
+  c18.connect(1, 2, 1)
+  c18.connect(2, 1, 1)
+  net.addConnection(c18)
+  const tFinal = net.forwardPropogate(n1)
+  console.log(tFinal)
+
+
+
+
+
 
 
 

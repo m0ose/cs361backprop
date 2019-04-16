@@ -64,6 +64,12 @@ class Network {
             let conx = this.connections[i]
             let a = conx.forwardPropogate(activations[i])
             activations.push(a)
+            for (var n of a) {
+                //console.assert(!isNaN(n))
+                if (isNaN(n)) {
+                    throw 'Nan encountered'
+                }
+            }
         }
         return activations
     }
@@ -116,8 +122,8 @@ class Network {
         let c3 = this.connections[connectIndex + 2]
         c3.connect(a, a, 1)
         for (var i = 0; i < bits; i++) {
-            c3.connect(a, xstart + i, -1)
-            c3.connect(temp, ystart + i, -1)
+            c3.connect(a, ystart + i, -10000)
+            c3.connect(temp, xstart + i, -10000)
             c3.connect(xstart + i, xstart + i, 1)
             c3.connect(ystart + i, ystart + i, 1)
         }
@@ -156,6 +162,8 @@ class Network {
                         let yr = j * h
                         ctx.moveTo(xl, yl)
                         ctx.lineTo(xr, yr)
+                        ctx.fillRect(xl, yl, 4, 4)
+                        ctx.fillRect(xr, yr, 4, 4)
                         ctx.stroke()
                         ctx.closePath()
                     }
@@ -219,5 +227,30 @@ function test() {
     }
     let canxor = nxor.draw()
     document.body.appendChild(canxor)
+    //
+    // if then else
+    //
+    let nifelse = new Network()
+    let d1 = new connection(5, 5)
+    d1.identity([0])
+    let d2 = new connection(5, 5)
+    d2.identity([0])
+    let d3 = new connection(5, 5)
+    d3.identity([0])
+    let d4 = new connection(5, 3)
+    d4.identity([0])
+    nifelse.addConnection(d1)
+    nifelse.addConnection(d2)
+    nifelse.addConnection(d3)
+    nifelse.addConnection(d4)
+    nifelse.ifAthenXelseY(0, 1, 3, 4, 2, 2, 1)
+    let cancan = nifelse.draw()
+    document.body.appendChild(cancan)
+    let res1 = nifelse.forwardPropogate([1, 1, 0, 123, 404])[4]
+    let res0 = nifelse.forwardPropogate([1, 0, 0, 123, 404])[4]
+    console.assert(res1[1] == 1 && res1[2] == 123, 'ifthen else fail', res1)
+    console.assert(res0[1] == 0 && res0[2] == 404, 'ifthen else fail', res0)
+    console.log('ifthenelse', res1)
+
 }
 setTimeout(test, 10)
