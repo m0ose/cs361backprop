@@ -68,19 +68,14 @@ class Network {
         return activations
     }
 
-    // let nxor = new Network()
-    // let c3 = new connection(3, 3)
-    // c3.connectListToOne([1, 2], 1, -1)
-    // c3.connectListToOne([1, 2], 2, 1)
-    // c3.connect(0, 0, 1)
-    // c3.connect(0, 1, 1)
-    // c3.connect(0, 2, -1)
-    // nxor.addConnection(c3)
-    // let c4 = new connection(3, 1)
-    // c4.connect(0, 0, 1)
-    // c4.connect(1, 0, -1)
-    // c4.connect(2, 0, -2)
-    // nxor.addConnection(c4)
+    /**
+     * XOR 
+     * @param {*} connectIndex Index of the start connection layer
+     * @param {*} l1x l1 index for x
+     * @param {*} l1y l1 index for y
+     * @param {*} l2  where to store middle for l2
+     * @param {*} l3 where to put output of xor
+     */
     makeXOR(connectIndex, l1x, l1y, l2, l3) {
         let c1 = this.connections[connectIndex]
         c1.connectListToOne([l1x, l1y], l2, -1)
@@ -93,13 +88,22 @@ class Network {
         c2.connect(l2 + 1, l3, -2)
     }
 
+    differenceLayer(connectIndex, xindex, yindex, outindex, bits = 6) {
+        let c = this.connections[connectIndex]
+        for (let i = 0; i < bits; i++) {
+            let indx2 = bits - i - 1
+            c.connect(xindex + indx2, outindex, 2 ** (bits - indx2 - 1))
+            c.connect(yindex + indx2, outindex, -(2 ** (bits - indx2 - 1)))
+        }
+    }
+
     draw() {
         var maxNeurons = 0
         this.connections.forEach((conx) => {
             maxNeurons = Math.max(maxNeurons, conx.weights.length)
         })
-        let w = 200
-        let h = 50
+        let w = 300
+        let h = 100
         var can = document.createElement('canvas')
         can.width = w * this.connections.length
         can.height = h * maxNeurons
@@ -121,9 +125,7 @@ class Network {
                         ctx.moveTo(xl, yl)
                         ctx.lineTo(xr, yr)
                         ctx.stroke()
-
                         ctx.closePath()
-
                     }
                 }
             }
