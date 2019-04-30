@@ -1,5 +1,5 @@
 /**
- * Hand made neural network
+ * Neural network
  *
  * Cody Smith
  * 2019
@@ -14,12 +14,18 @@ function RELU(arr) {
   });
 }
 
+function RELUprime(arr) {
+  return arr.map(x => {
+    if (x < 0) return 0;
+    return 1;
+  });
+}
+
 /**
  *
  * connections between network levels
  *
  */
-
 export class Connection {
   constructor(sizeA, sizeB) {
     this.weights = this.zeros(sizeA, sizeB);
@@ -95,6 +101,11 @@ export class Network {
   addConnection(conx) {
     this.connections.push(conx);
   }
+  /**
+   *
+   * @param {Array} arr Input
+   * @param {*} bias
+   */
   forwardPropogate(arr, bias = 0) {
     let activations = [arr];
     let zs = [arr];
@@ -117,55 +128,79 @@ export class Network {
     return { activations, zs };
   }
 
-  calculateGradient(expectedOutput, activations, bias) {
-    const lastLayer = activations[activations.length - 1];
-    const C = new Array(lastLayer.length);
-    for (var i = 0; i < lastLayer.length; i++) {
-      C = (expectedOutput[i] - lastLayer[i]) ** 2;
+  /**
+   *
+   * Calculate the gradient for every weight
+   *
+   * @param {Array} expectedOutput
+   * @param {Array} activations
+   * @param {Array} zs
+   * @param {Array} weights
+   * @param {Array} bias
+   */
+  calculateGradient(expectedOutput, activations, zs, weights, bias) {
+    let dcdb = [];
+    let dCdWs = [];
+    const opErrors = [];
+    let weights2 = [[]].concat(weights); //but weights have a length of one less than the activations becuase i included the input values
+    //
+    // calculate final cost
+    const actLast = activations[activations.length - 1];
+    const C = new Array(actLast.length);
+    const Cprime = new Array(actLast.length);
+    for (let i = 0; i < actLast.length; i++) {
+      C[i] = (1 / 2) * (expectedOutput[i] - actLast[i]) ** 2;
+      Cprime[i] = expectedOutput[i] - actLast[i];
+    }
+    let reluP = RELUprime(zs[zs.length - 1]);
+    const opErrL = hadamardProduct(Cprime, reluP);
+    // record final cost
+    opErrors[zs.length - 1] = opErrL;
+    //
+    // Compute intermediate change in cost in terms of weights
+    //
+    for (let i = activations.length - 1; i >= 1; i--) {
+      if (i < activations.length - 1) {
+        let wiPlus1 = weights2[i + 1]; // this is i+1
+        let opErriPlus1 = opErrors[i + 1];
+        let rz = RELUprime(zs[i]);
+        let tmp = numeric.dot(wiPlus1.weights, opErriPlus1);
+        let opErri = hadamardProduct(tmp, rz);
+        opErrors[i] = opErri;
+      }
+      dcdb[i] = opErrors[i];
+      let dcdw_jk = new Connection(
+        activations[i - 1].length,
+        activations[i].length
+      );
+      for (var k = 0; k < activations[i].length; k++) {
+        for (var j = 0; j < activations[i - 1].length; j++) {
+          let delta = activations[i - 1][j] * opErrors[i][k];
+          dcdw_jk.connect(j, k, delta);
+        }
+      }
+
+      dCdWs[i] = dcdw_jk.weights;
+    }
+    return { dcdb, dCdWs };
+  }
+
+  maintainBiasNeurons(bias = 1) {
+    for (var c of this.connections) {
+      for (var i = 1; i < c.weights.length; i++) {
+        c.connect(i, 0, 0);
+      }
+      for (var j = 0; j < c.weights[0].length; j++) {
+        c.connect(0, j, bias);
+      }
     }
   }
 
-  differenceLayer(connectIndex, xindex, yindex, outindex, bits = 6) {
-    let c = this.connections[connectIndex];
-    for (let i = 0; i < bits; i++) {
-      let indx2 = bits - i - 1;
-      c.connect(xindex + indx2, outindex, 2 ** (bits - indx2 - 1));
-      c.connect(yindex + indx2, outindex, -(2 ** (bits - indx2 - 1)));
-    }
-  }
-
-  ifAthenXelseY(connectIndex, a, xstart, ystart, temp, outBits, bits = 6) {
-    let c1 = this.connections[connectIndex];
-    c1.connect(0, a, 1);
-    c1.connect(a, a, -2);
-    for (var i = 0; i < bits; i++) {
-      c1.connect(xstart + i, xstart + i, 1);
-      c1.connect(ystart + i, ystart + i, 1);
-    }
-    let c2 = this.connections[connectIndex + 1];
-    c2.connect(a, a, -1);
-    c2.connect(0, a, 1);
-    c2.connect(a, temp, 1);
-    for (var i = 0; i < bits; i++) {
-      c2.connect(xstart + i, xstart + i, 1);
-      c2.connect(ystart + i, ystart + i, 1);
-    }
-    let c3 = this.connections[connectIndex + 2];
-    c3.connect(a, a, 1);
-    for (var i = 0; i < bits; i++) {
-      c3.connect(a, ystart + i, -10000);
-      c3.connect(temp, xstart + i, -10000);
-      c3.connect(xstart + i, xstart + i, 1);
-      c3.connect(ystart + i, ystart + i, 1);
-    }
-    let c4 = this.connections[connectIndex + 3];
-    c4.connect(a, a, 1);
-    for (var i = 0; i < bits; i++) {
-      c4.connect(xstart + i, outBits + i, 1);
-      c4.connect(ystart + i, outBits + i, 1);
-    }
-  }
-
+  /**
+   * Draw. returns a Canvas
+   * @param {*} w
+   * @param {*} h
+   */
   draw(w = 150, h = 50) {
     var maxNeurons = 0;
     this.connections.forEach(conx => {
@@ -203,10 +238,15 @@ export class Network {
   }
 }
 
+/**
+ * Helper function
+ * @param {Array} a
+ * @param {Array} b
+ */
 export function hadamardProduct(a, b) {
   const y = new Array(a.length);
   for (var i = 0; i < a.length; i++) {
-    y = [i] = a[i] * b[i];
+    y[i] = a[i] * b[i];
   }
   return y;
 }

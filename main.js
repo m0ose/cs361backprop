@@ -39,7 +39,7 @@ export function mainNetwork() {
   console.log({
     weights: net.connections,
     activations: tFinal.activations,
-    zs: tFinal.z
+    zs: tFinal.zs
   });
   return net;
 }

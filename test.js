@@ -48,6 +48,34 @@ export function test() {
   }
   let canxor = nxor.draw();
   document.body.appendChild(canxor);
+  //
+  // computeGradient
+  var defaultInput = [1, 2, 3, 4, 5, 6, 7]; // [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2
+  const net = new Network();
+  const input = [1].concat(defaultInput);
+  let c1 = new Connection(7, 11); //give me some space
+  c1.fullyConnect(undefined, true);
+  net.addConnection(c1);
+  c2 = new Connection(11, 13);
+  c2.fullyConnect(undefined, true);
+  net.addConnection(c2);
+  c3 = new Connection(13, 3);
+  c3.fullyConnect(undefined, true);
+  net.addConnection(c3);
+  let bob = net.forwardPropogate(input);
+  console.log({
+    weights: net.connections,
+    activations: bob.activations,
+    zs: bob.zs
+  });
+  let grr = net.calculateGradient(
+    [4, 5, 6],
+    bob.activations,
+    bob.zs,
+    net.connections,
+    [1, 2, 3]
+  );
+  console.log("gradient maybe", grr);
 }
 
 setTimeout(test, 10);
