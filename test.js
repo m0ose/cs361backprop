@@ -112,7 +112,7 @@ export function testBackProp() {
   function iterate(n = 0) {
     if (n > 3000) return;
 
-    let batch = getAddBatch(100);
+    let batch = getAddBatch(400);
     // let binaryBatch = convertBatchToInputAndOutput(batch);
     net.backPropogation(batch, 0.001, false);
     console.log(n);
