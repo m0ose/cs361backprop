@@ -91,7 +91,7 @@ export class Network {
       }
       result.connections[j].weights = newWeights;
     }
-    if (biasNeurons) result.biasNeurons();
+    if (biasNeurons) result.maintainBiasNeurons();
     //console.log(result, this);
     this.connections = result.connections;
   }

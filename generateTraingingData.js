@@ -66,7 +66,7 @@ export function getBatch(size = 100, pileSize = 64) {
   let losers = allData.filter(a => {
     return a.isWin <= 0;
   });
-  let loserSize = Math.ceil(size / 6);
+  let loserSize = Math.ceil(size);
   let result = []
     .concat(selectN(loserSize, losers))
     .concat(selectN(size, winners));
@@ -84,7 +84,7 @@ export function convertBatchToInputAndOutput(batch) {
       .concat(b1)
       .concat(b2)
       .concat(b3);
-    let output = [Math.min(1, b.isWin)];
+    let output = [1, b.isWin, 100 * Math.min(1, b.isWin)];
     res.push({ input, output });
   }
   return res;
