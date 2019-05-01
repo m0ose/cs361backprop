@@ -50,7 +50,7 @@ export class Network {
     return res;
   }
 
-  backPropogation(batch, learningRate = 0.000000001) {
+  backPropogation(batch, learningRate = 0.0000001, biasNeurons = true) {
     let acc = this.duplicate();
     for (var b of batch) {
       let fwd = this.forwardPropogate(b.input);
@@ -75,9 +75,9 @@ export class Network {
         acc.connections[i].weights = s;
       }
     }
-
     ////
     // finally add weights plus accumulation of gradients
+    //     It turns out numeric cant add matrices 😕
     //
     let result = this.duplicate();
     for (var j = 0; j < result.connections.length; j++) {
@@ -91,7 +91,7 @@ export class Network {
       }
       result.connections[j].weights = newWeights;
     }
-    result.maintainBiasNeurons();
+    if (biasNeurons) result.biasNeurons();
     //console.log(result, this);
     this.connections = result.connections;
   }
@@ -116,7 +116,7 @@ export class Network {
     let dcdb = [];
     let dCdWs = [];
     const opErrors = [];
-    let weights2 = [[]].concat(weights); //but weights have a length of one less than the activations becuase i included the input values
+    let weights2 = [[]].concat(weights); //Change indices.  Weights have a length of one less than the activations becuase i included the input values
     //
     // calculate final cost
     const actLast = activations[activations.length - 1];
