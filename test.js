@@ -91,10 +91,10 @@ export function test() {
 
 export function testBackProp() {
   const net = new Network();
-  const c1 = new Connection(3, 3); //give me some space
+  const c1 = new Connection(2, 2); //give me some space
   c1.fullyConnect(undefined, true);
   net.addConnection(c1);
-  const c2 = new Connection(3, 1);
+  const c2 = new Connection(2, 1);
   c2.fullyConnect(undefined, true);
   net.addConnection(c2);
   window.addNet = net;
@@ -105,26 +105,26 @@ export function testBackProp() {
     for (var i = 0; i < n; i++) {
       let x = Math.random() * 10;
       let y = Math.random() * 10;
-      res.push({ input: [1, x, y], output: [x + y] });
+      res.push({ input: [x, y], output: [x + y] });
     }
     return res;
   }
   function iterate(n = 0) {
     if (n > 3000) return;
 
-    let batch = getAddBatch(1000);
+    let batch = getAddBatch(100);
     // let binaryBatch = convertBatchToInputAndOutput(batch);
     net.backPropogation(batch, 0.001, false);
     console.log(n);
     // test
-    let batch2 = getAddBatch(1000);
+    let batch2 = getAddBatch(100);
     // let binaryBatch2 = convertBatchToInputAndOutput(batch2);
     let errorSum = 0;
     for (var b of batch2) {
       let fwd = net.forwardPropogate(b.input);
       errorSum =
         errorSum +
-        Math.abs(fwd.activations[fwd.activations.length - 1][0] - b.output[0]);
+        (fwd.activations[fwd.activations.length - 1][0] - b.output[0]) ** 2;
     }
     errorSum = errorSum / batch2.length;
     console.log({ errorSum });
