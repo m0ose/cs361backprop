@@ -1,3 +1,7 @@
+/**
+ * Generate NIM games
+ */
+
 var allData = undefined;
 var oldPileSize = undefined;
 
@@ -62,8 +66,36 @@ export function getBatch(size = 100, pileSize = 64) {
   let losers = allData.filter(a => {
     return a.isWin <= 0;
   });
-  let result = [].concat(selectN(size, losers)).concat(selectN(size, winners));
+  let loserSize = Math.ceil(size / 6);
+  let result = []
+    .concat(selectN(loserSize, losers))
+    .concat(selectN(size, winners));
+  result = shuffle(result);
   return result;
+}
+
+export function convertBatchToInputAndOutput(batch) {
+  let res = [];
+  for (var b of batch) {
+    let b1 = toBinary(b.p1);
+    let b2 = toBinary(b.p2);
+    let b3 = toBinary(b.p3);
+    let input = [1]
+      .concat(b1)
+      .concat(b2)
+      .concat(b3);
+    let output = [Math.min(1, b.isWin)];
+    res.push({ input, output });
+  }
+  return res;
+}
+
+function toBinary(n) {
+  let str = n.toString(2).padStart(6, "0");
+  let fu = str.split("").map(a => {
+    return parseInt(a);
+  });
+  return fu;
 }
 
 function selectN(n, pile) {

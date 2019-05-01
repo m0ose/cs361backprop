@@ -4,8 +4,12 @@
 <script type='module'>
 
 import {main, mainNetwork} from './main.js'
-import {Connection, Network} from './connection.js'
+import {Connection} from './connection.js'
+import { Network } from "./Network.js";
 import {test} from './test.js'
+import {getBatch} from './generateTraingingData.js'
+
+window.getBatch = getBatch
 
 function changedInput(){
     let p1 = toBinary(parseInt(document.getElementById('p1').value))
@@ -27,7 +31,7 @@ function draw() {
   document.body.appendChild(can)
 }
 
-setTimeout(draw, 100)
+//setTimeout(draw, 100)
 
 window.addEventListener('DOMContentLoaded', changedInput, false);
 </script>
@@ -48,6 +52,7 @@ window.addEventListener('DOMContentLoaded', changedInput, false);
 <div style='font-size: xx-large;'>result: <span id='result'></span></div>
 <div id="explanation"></div>
 <br><br><br>
+<div id='drawing'></div>
 <br><br><br>
 <br><br><br>
 <br><br><br>

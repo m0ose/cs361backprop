@@ -4,7 +4,12 @@
  *
  *
  */
-import { Connection, Network } from "./connection.js";
+import { Connection } from "./connection.js";
+import { Network } from "./Network.js";
+import {
+  getBatch,
+  convertBatchToInputAndOutput
+} from "./generateTraingingData.js";
 
 export function test() {
   var n1 = new Connection(3, 5);
@@ -50,7 +55,7 @@ export function test() {
   document.body.appendChild(canxor);
   //
   // computeGradient
-  var defaultInput = [1, 2, 3, 4, 5, 6, 7]; // [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2
+  var defaultInput = [1, 1, 1, 1, 1, 1, 1]; // [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0]; // 5, 13, 2
   const net = new Network();
   const input = [1].concat(defaultInput);
   let c1 = new Connection(7, 11); //give me some space
@@ -76,6 +81,61 @@ export function test() {
     [1, 2, 3]
   );
   console.log("gradient maybe", grr);
+  //
+  console.log("duplicate", net, "-->", net.duplicate());
+
+  //
+  //
+  testBackProp();
+}
+
+export function testBackProp() {
+  const net = new Network();
+  const c1 = new Connection(19, 32); //give me some space
+  c1.fullyConnect(undefined, true);
+  net.addConnection(c1);
+  const c2 = new Connection(32, 64);
+  c2.fullyConnect(undefined, true);
+  net.addConnection(c2);
+  const c3 = new Connection(64, 32);
+  c3.fullyConnect(undefined, true);
+  net.addConnection(c3);
+  const c4 = new Connection(32, 1);
+  c4.fullyConnect(undefined, true);
+  net.addConnection(c4);
+  net.maintainBiasNeurons();
+  //
+  //Object.freeze(net);
+  function iterate(n = 0) {
+    if (n > 300) return;
+
+    let batch = getBatch(1000);
+    let binaryBatch = convertBatchToInputAndOutput(batch);
+    net.backPropogation(binaryBatch);
+    console.log(n);
+    // test
+    let batch2 = getBatch(1000);
+    let binaryBatch2 = convertBatchToInputAndOutput(batch2);
+    let errorSum = 0;
+    for (var b of binaryBatch2) {
+      let fwd = net.forwardPropogate(b.input);
+      errorSum =
+        errorSum +
+        Math.abs(fwd.activations[fwd.activations.length - 1][0] - b.output[0]);
+    }
+    errorSum = errorSum / batch2.length;
+    console.log({ errorSum });
+    setTimeout(iterate, 1, n + 1);
+  }
+
+  iterate();
+
+  let can = net.draw();
+  can.id = "flubber";
+  let div = document.getElementById("flubber");
+  if (div) document.body.removeChild(div);
+  document.body.appendChild(can);
+  console.log("net", net);
 }
 
 setTimeout(test, 10);

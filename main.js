@@ -8,7 +8,8 @@
  * 2019
  *
  */
-import { Connection, Network } from "./connection.js";
+import { Connection } from "./connection.js";
+import { Network } from "./Network.js";
 
 export function main(p1, p2, p3) {
   let input2 = [1]
