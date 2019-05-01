@@ -55,7 +55,7 @@ export function generateAllGames(pileSize = 64) {
  * @param {Number} size
  * @param {Number} pileSize
  */
-export function getBatch(size = 100, pileSize = 64) {
+export function getBatch(size = 100, pileSize = 3) {
   if (!allData || pileSize != oldPileSize) {
     allData = generateAllGames(pileSize);
     oldPileSize = pileSize;
@@ -84,7 +84,7 @@ export function convertBatchToInputAndOutput(batch) {
       .concat(b1)
       .concat(b2)
       .concat(b3);
-    let output = [1, b.isWin, 100 * Math.min(1, b.isWin)];
+    let output = [Math.min(1, b.isWin) * 100];
     res.push({ input, output });
   }
   return res;

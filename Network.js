@@ -171,6 +171,7 @@ export class Network {
     for (var c2 of this.connections) {
       c2.connect(0, 0, bias);
     }
+    this.connections[this.connections.length - 1].connect(0, 0, 0);
   }
 
   /**
@@ -193,22 +194,25 @@ export class Network {
       for (var i = 0; i < conx.weights.length; i++) {
         let row = conx.weights[i];
         for (var j = 0; j < row.length; j++) {
-          if (Math.abs(row[j]) > 0.001) {
-            ctx.beginPath();
-            if (row[j] < 0) ctx.strokeStyle = "#092";
-            if (row[j] > 0) ctx.strokeStyle = "#900";
-            let xl = x * w;
-            let xr = xl + w;
-            let yl = i * h;
-            let yr = j * h;
-            ctx.moveTo(xl, yl);
-            ctx.lineTo(xr, yr);
-            ctx.fillRect(xl, yl, 4, 4);
-            ctx.fillRect(xr, yr, 4, 4);
-            ctx.stroke();
-            ctx.closePath();
-          }
+          //   if (Math.abs(row[j]) > 0.001) {
+          ctx.beginPath();
+          if (Math.abs(row[j] < 0.001)) ctx.strokeStyle = "#aaa";
+          else if (row[j] == 1) ctx.strokeStyle = "#00f";
+          else if (row[j] < 0) ctx.strokeStyle = "#092";
+          else if (row[j] > 0) ctx.strokeStyle = "#900";
+
+          let xl = x * w;
+          let xr = xl + w;
+          let yl = i * h;
+          let yr = j * h;
+          ctx.moveTo(xl, yl);
+          ctx.lineTo(xr, yr);
+          ctx.fillRect(xl, yl, 4, 4);
+          ctx.fillRect(xr, yr, 4, 4);
+          ctx.stroke();
+          ctx.closePath();
         }
+        // }
       }
     }
     return can;

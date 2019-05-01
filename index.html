@@ -3,7 +3,7 @@
 </script>
 <script type='module'>
 
-import {main, mainNetwork} from './main.js'
+import  './main.js'
 import {Connection} from './connection.js'
 import { Network } from "./Network.js";
 import {test} from './test.js'
@@ -11,25 +11,6 @@ import {getBatch} from './generateTraingingData.js'
 
 window.getBatch = getBatch
 
-function changedInput(){
-    let p1 = toBinary(parseInt(document.getElementById('p1').value))
-    let p2 = toBinary(parseInt(document.getElementById('p2').value))
-    let p3 = toBinary(parseInt(document.getElementById('p3').value))
-    let res = main(p1,p2,p3)
-    console.log('result',res)
-}
-
-function toBinary(n){
-    let str = n.toString(2).padStart(6,'0')
-    let fu = str.split('').map((a)=>{return parseInt(a)})
-    return fu
-}
-
-function draw() {
-  let net = mainNetwork()
-  let can = net.draw(130, 35)
-  document.body.appendChild(can)
-}
 
 //setTimeout(draw, 100)
 
@@ -44,9 +25,6 @@ window.addEventListener('DOMContentLoaded', changedInput, false);
 </div>
 <hr>
 <br>
-<div>pile 1: <input type="number" id='p1' value=5 ></div>
-<div>pile 2: <input type="number" id='p2' value=13 ></div>
-<div>pile 3: <input type="number" id='p3' value=2 ></div>
 <button onclick="changedInput()">run</button>
 <div></div>
 <div style='font-size: xx-large;'>result: <span id='result'></span></div>
