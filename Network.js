@@ -149,7 +149,7 @@ export class Network {
       );
       for (var k = 0; k < activations[i].length; k++) {
         for (var j = 0; j < activations[i - 1].length; j++) {
-          let delta = activations[i - 1][j] * opErrors[i][k];
+          let delta = activations[i - 1][j] * opErrors[i][k] + Math.random();
           dcdw_jk.connect(j, k, delta);
         }
       }

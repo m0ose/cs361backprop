@@ -88,4 +88,4 @@ export function test() {
   //
 }
 
-setTimeout(test, 10);
+// setTimeout(test, 10);

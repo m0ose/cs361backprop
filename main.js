@@ -10,8 +10,12 @@
  */
 import { Connection } from "./connection.js";
 import { Network } from "./Network.js";
+import {
+  getBatch,
+  convertBatchToInputAndOutput
+} from "./generateTraingingData.js";
 
-setTimeout(testBackPropToy, 1);
+setTimeout(testBackProp, 1);
 
 function plot(x, y) {
   var ctx = document.getElementById("myChart");
@@ -75,13 +79,6 @@ export function testBackProp() {
   let errors = [];
   function iterate(n = 0) {
     if (n > 1000) {
-      plot(iters, errors);
-      let can = net.draw();
-      can.id = "flubber";
-      let div = document.getElementById("flubber");
-      if (div) document.body.removeChild(div);
-      document.body.appendChild(can);
-      console.log("net", net);
       return;
     }
 
@@ -106,6 +103,18 @@ export function testBackProp() {
     iters.push(n);
     errors.push(errorSum);
     console.log({ errorSum });
+    if (n % 50 == 0) {
+      try {
+        plot(iters, errors);
+        let can = net.draw();
+        can.id = "flubber";
+        let div = document.getElementById("flubber");
+        if (div) document.body.removeChild(div);
+        document.body.appendChild(can);
+        console.log("net", net);
+      } catch (er) {}
+    }
+
     setTimeout(iterate, 1, n + 1);
   }
 
